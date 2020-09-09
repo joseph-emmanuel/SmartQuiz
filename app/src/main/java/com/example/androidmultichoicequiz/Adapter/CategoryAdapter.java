@@ -1,6 +1,7 @@
 package com.example.androidmultichoicequiz.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androidmultichoicequiz.Common.Common;
 import com.example.androidmultichoicequiz.Model.Category;
+import com.example.androidmultichoicequiz.QuestionActivity;
 import com.example.androidmultichoicequiz.R;
 
 import java.util.List;
@@ -58,7 +61,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             card_category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Click at category "+categories.get(getAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
+                    Common.selectedCategory=categories.get(getAdapterPosition());
+                    Intent intent=new Intent(context, QuestionActivity.class);
+                    context.startActivity(intent);
                 }
             });
         }
