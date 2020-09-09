@@ -6,6 +6,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+
+import com.example.androidmultichoicequiz.Adapter.CategoryAdapter;
+import com.example.androidmultichoicequiz.Common.SpaceDecoration;
+import com.example.androidmultichoicequiz.DBHelper.DBHelper;
+import com.example.androidmultichoicequiz.Model.Category;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,5 +32,12 @@ public class MainActivity extends AppCompatActivity {
         recycler_category.setLayoutManager(new GridLayoutManager(this,2));
 
         //getting Screen size
+
+
+        CategoryAdapter adapter=new CategoryAdapter(MainActivity.this, DBHelper.getInstance(this).getAllCategories());
+        int spaceInPixel=4;
+        recycler_category.addItemDecoration((new SpaceDecoration(spaceInPixel)));
+        recycler_category.setAdapter(adapter );
+
     }
 }
