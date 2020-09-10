@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androidmultichoicequiz.Common.Common;
 import com.example.androidmultichoicequiz.Model.CurrentQuestion;
 import com.example.androidmultichoicequiz.R;
 
 import java.util.List;
 
-public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
+public class  AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
 
     Context context;
     List< CurrentQuestion> currentQuestions;
@@ -42,8 +43,14 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AnswerSheetAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        if(currentQuestions.get(position).getType()== Common.ANSWER_TYPE.RIGHT_ANSWER)
+            holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);
+        else if(currentQuestions.get(position).getType()== Common.ANSWER_TYPE.WRONG_ANSWER)
+            holder.question_item.setBackgroundResource(R.drawable.grid_question_wrong_answer);
+        else
+            holder.question_item.setBackgroundResource(R.drawable.grid_question_no_answer);
 
     }
 
