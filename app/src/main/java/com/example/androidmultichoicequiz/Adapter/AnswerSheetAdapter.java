@@ -44,7 +44,7 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
     @Override
     public void onBindViewHolder(@NonNull AnswerSheetAdapter.MyViewHolder holder, int position) {
 
-        if(currentQuestions.get(i).)
+
     }
 
     @Override
