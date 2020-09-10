@@ -18,7 +18,7 @@ import java.util.List;
 public class  AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
 
     Context context;
-    List< CurrentQuestion> currentQuestions;
+    List<CurrentQuestion> currentQuestions;
 
     public AnswerSheetAdapter(Context context, List<CurrentQuestion> currentQuestions) {
         this.context = context;
@@ -37,7 +37,7 @@ public class  AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter
 
     @NonNull
     @Override
-    public AnswerSheetAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.layout_grid_answer_sheet_item,parent,false);
         return new MyViewHolder(itemView);
     }

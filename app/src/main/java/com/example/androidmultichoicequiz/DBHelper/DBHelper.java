@@ -61,7 +61,7 @@ public class DBHelper extends SQLiteAssetHelper {
             while (!cursor.isAfterLast()){
                 Question question=new Question(
                         cursor.getInt(cursor.getColumnIndex("ID")),
-                        cursor.getString(cursor.getColumnIndex("QuesionText")),
+                        cursor.getString(cursor.getColumnIndex("QuestionText")),
                         cursor.getString(cursor.getColumnIndex("QuestionImage")),
                         cursor.getString(cursor.getColumnIndex("AnswerA")),
                         cursor.getString(cursor.getColumnIndex("AnswerB")),

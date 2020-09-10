@@ -5,7 +5,6 @@ public class Category {
     private String name,image;
 
     public Category() {
-        this.id = id;
     }
 
     public Category(int id, String name, String image) {

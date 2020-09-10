@@ -11,6 +11,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.androidmultichoicequiz.Adapter.AnswerSheetAdapter;
 import com.example.androidmultichoicequiz.Common.Common;
 import com.example.androidmultichoicequiz.DBHelper.DBHelper;
+ import com.example.androidmultichoicequiz.Model.CurrentQuestion;
  import com.example.androidmultichoicequiz.Model.Question;
  import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,6 +57,7 @@ public class QuestionActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle((Common.selectedCategory.getName()));
         setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +93,7 @@ public class QuestionActivity extends AppCompatActivity
             txt_timer.setVisibility(View.VISIBLE);
             txt_right_answer.setVisibility(View.VISIBLE);
 
+            txt_right_answer.setText((new StringBuilder(String.format("%d/%d",Common.right_answer_count,Common.questionList.size()))));
             countDownTimer();
 
 
@@ -101,7 +104,7 @@ public class QuestionActivity extends AppCompatActivity
 //            getAnswerSheetItems();
 
             //view
-            answer_sheet_view = (RecyclerView) findViewById(R.id.answer_sheet);
+            answer_sheet_view = (RecyclerView) findViewById(R.id.grid_answer );
             answer_sheet_view.setHasFixedSize(true);
             if (Common.questionList.size() > 5)
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this, Common.questionList.size() / 2));
@@ -122,9 +125,9 @@ public class QuestionActivity extends AppCompatActivity
                @Override
                public void onTick(long l) {
                     txt_timer.setText(String.format("%02d:%02d",
-                            TimeUnit.MILLISECONDS.toMinutes(1),
-                            TimeUnit.MILLISECONDS.toSeconds(1) -
-                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(1))));
+                            TimeUnit.MILLISECONDS.toMinutes(l),
+                            TimeUnit.MILLISECONDS.toSeconds(l) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l))));
                     time_play-=1000;
                }
 
@@ -140,9 +143,9 @@ public class QuestionActivity extends AppCompatActivity
                @Override
                public void onTick(long l) {
                    txt_timer.setText(String.format("%02d:%02d",
-                           TimeUnit.MILLISECONDS.toMinutes(1),
-                           TimeUnit.MILLISECONDS.toSeconds(1) -
-                                   TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(1))));
+                           TimeUnit.MILLISECONDS.toMinutes(l),
+                           TimeUnit.MILLISECONDS.toSeconds(l) -
+                                   TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l))));
                    time_play-=1000;
                }
 
@@ -173,11 +176,15 @@ public class QuestionActivity extends AppCompatActivity
                     }).show();
         }
         else{
+            if(Common.answerSheetList.size()>0)
+                Common.answerSheetList.clear();
             //Generate answerSheet item from question
             //totoal 30 question and 30 answerSheets item
             //1 question =i answer sheet item
 
-            for(Question question )
+            for(int i=0;i<Common.questionList.size();i++){
+                Common.answerSheetList.add(new CurrentQuestion(i,Common.ANSWER_TYPE.NO_ANSWER));
+            }
 
         }
     }
