@@ -9,6 +9,7 @@ import com.example.androidmultichoicequiz.QuestionFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class Common {
     public static final int TOTAL_TIME =20*60*1000 ;
@@ -21,6 +22,7 @@ public class Common {
     public static int right_answer_count=0;
     public static int wrong_answer_count=0;
     public static ArrayList<QuestionFragment> fragmentsList=new ArrayList<>();
+    public static TreeSet<String> selectedValue=new TreeSet<>();
 
     public enum ANSWER_TYPE{
         NO_ANSWER,

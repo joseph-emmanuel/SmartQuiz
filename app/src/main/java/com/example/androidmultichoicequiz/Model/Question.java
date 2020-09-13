@@ -1,17 +1,17 @@
 package com.example.androidmultichoicequiz.Model;
 
-public class Question {
+public class  Question {
     private int id;
     private String questionText,
     questionImage,answerA,answerB,answerC,answerD,
     correctAnswer;
-    private int isImageQuestion;
+    private boolean isImageQuestion;
     private int categoryId;
 
     public Question() {
     }
 
-    public Question(int id, String questionText, String questionImage, String answerA, String answerB, String answerC, String answerD, String correctAnswer, int isImageQuestion, int categoryId) {
+    public Question(int id, String questionText, String questionImage, String answerA, String answerB, String answerC, String answerD, String correctAnswer, boolean isImageQuestion, int categoryId) {
         this.id = id;
         this.questionText = questionText;
         this.questionImage = questionImage;
@@ -88,11 +88,11 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
-    public int getIsImageQuestion() {
+    public boolean getIsImageQuestion() {
         return isImageQuestion;
     }
 
-    public void setIsImageQuestion(int isImageQuestion) {
+    public void setIsImageQuestion(boolean isImageQuestion) {
         this.isImageQuestion = isImageQuestion;
     }
 

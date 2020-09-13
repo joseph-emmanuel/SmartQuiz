@@ -2,7 +2,8 @@ package com.example.androidmultichoicequiz;
 
  import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.View;
+ import android.view.MenuItem;
+ import android.view.View;
 import android.view.Menu;
  import android.widget.TableLayout;
  import android.widget.TextView;
@@ -22,7 +23,8 @@ import com.google.android.material.navigation.NavigationView;
  import com.google.android.material.tabs.TabLayout;
 
  import androidx.annotation.NonNull;
-import androidx.navigation.NavController;
+ import androidx.constraintlayout.widget.ConstraintLayout;
+ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -40,7 +42,7 @@ public class QuestionActivity extends AppCompatActivity
     int time_play= Common.TOTAL_TIME;
     boolean isAnswerModeView=false;
 
-    TextView txt_right_answer,txt_timer;
+    TextView txt_right_answer,txt_timer,txt_wrong_answer ;
 
 
     RecyclerView answer_sheet_view;
@@ -67,6 +69,12 @@ public class QuestionActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle((Common.selectedCategory.getName()));
         setSupportActionBar(toolbar);
+
+
+        ///to be deleted
+
+
+        ///till here
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -102,6 +110,7 @@ public class QuestionActivity extends AppCompatActivity
             txt_right_answer.setVisibility(View.VISIBLE);
 
             txt_right_answer.setText((new StringBuilder(String.format("%d/%d",Common.right_answer_count,Common.questionList.size()))));
+
             countDownTimer();
 
 
@@ -131,10 +140,135 @@ public class QuestionActivity extends AppCompatActivity
 
             tabLayout.setupWithViewPager(viewPager);
 
+            //Event
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+                int SCROLLING_RIGHT=0;
+                int SCROLLING_LEFT=1;
+                int SCROLLING_UNDETERMINED=2;
+
+
+                int currentScrollDirection=2;
+                private  void setScrollingDirection(float postionOffset){
+                    if((1-postionOffset)>=0.5)
+                        this.currentScrollDirection=SCROLLING_RIGHT;
+                    else if((1-postionOffset)<=0.5)
+                        this.currentScrollDirection=SCROLLING_LEFT;
+                }
+
+                private boolean isScrollDiectionUndetermined(){
+                    return currentScrollDirection==SCROLLING_UNDETERMINED;
+                }
+
+                private  boolean isScrollingRight(){
+                    return  currentScrollDirection==SCROLLING_RIGHT;
+                }
+                private boolean isScrollingLeft(){
+                    return currentScrollDirection==SCROLLING_LEFT;
+                }
+
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    if(isScrollDiectionUndetermined())
+                        setScrollingDirection(positionOffset);
+                }
+
+                @Override
+                public void onPageSelected(int i) {
+
+                    QuestionFragment questionFragment;
+                    int positoin=0;
+                    if(i>0){
+                        if(isScrollingRight()){
+                            //if user scroll to right,get previous fragment to calculate result
+                            questionFragment=(Common.fragmentsList).get(i-1);
+                            positoin=i-1;
+                        }
+                        else if(isScrollingLeft()){
+                            //if user scroll to left,get next fragment to calculate result
+                            questionFragment=(Common.fragmentsList).get(i+1);
+                            positoin=i+1;
+                        }
+                        else {
+                            questionFragment=Common.fragmentsList.get(positoin);
+                        }
+                    }
+                    else{
+                        questionFragment=Common.fragmentsList.get(0);
+                        positoin=0;
+
+                    }
+
+                    //if you want to show currrect answer, just call function here
+                    CurrentQuestion question_state=questionFragment.getSelectedAnswer();
+                    Common.answerSheetList.set(positoin,question_state);//set question answer for asnwer sheet
+                    answerSheetAdapter.notifyDataSetChanged();//Change color in asnwer sheet
+                    countCurrectAnswer();
+
+                    txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
+                                    .append("/")
+                                    .append(String.format("%d",Common.questionList.size())).toString());
+//                    txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
+
+                    if(question_state.getType()!=Common.ANSWER_TYPE.NO_ANSWER){
+                        questionFragment.showCorrectAnswer();
+                        questionFragment.disableAnswer();
+
+                    }
+
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    if(state==ViewPager.SCROLL_STATE_IDLE){
+                        this.currentScrollDirection=SCROLLING_UNDETERMINED;
+                    }
+
+                }
+            });
+
 
 
         }
 
+    }
+
+    private void finishGame() {
+
+        int position =viewPager.getCurrentItem();
+        QuestionFragment questionFragment=Common.fragmentsList.get(position);
+
+        CurrentQuestion question_state=questionFragment.getSelectedAnswer();
+        Common.answerSheetList.set(position,question_state);//set question answer for asnwer sheet
+        answerSheetAdapter.notifyDataSetChanged();//Change color in asnwer sheet
+
+        countCurrectAnswer();
+
+        txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
+                .append("/")
+                .append(String.format("%d",Common.questionList.size())).toString());
+
+
+        if(question_state.getType()!=Common.ANSWER_TYPE.NO_ANSWER){
+            questionFragment.showCorrectAnswer();
+            questionFragment.disableAnswer();
+
+        }
+        //we will navigate to new Result activity here
+
+    }
+    private void countCurrectAnswer() {
+        //Result varisbale
+        Common.right_answer_count=Common.wrong_answer_count=0;
+        for(CurrentQuestion item:Common.answerSheetList){
+            if(item.getType()==Common.ANSWER_TYPE.RIGHT_ANSWER)
+                Common.right_answer_count++;
+            else if(item.getType()==Common.ANSWER_TYPE.WRONG_ANSWER)
+                Common.wrong_answer_count++;
+
+        }
     }
 
     private void genFragmentList() {
@@ -224,6 +358,10 @@ public class QuestionActivity extends AppCompatActivity
         }
     }
 
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -231,7 +369,52 @@ public class QuestionActivity extends AppCompatActivity
         return true;
     }
 
-//    @Override
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id=item.getItemId();
+        if(id==R.id.menu_finish_game){
+
+            if(!isAnswerModeView){
+                new MaterialStyledDialog.Builder(this)
+                        .setTitle("Finih ?").setIcon(R.drawable.ic_baseline_mood_24)
+                .setDescription("Do you really want to finish ?")
+                .setNegativeText("No")
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveText("Yes")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        finishGame();
+                    }
+                }).show();
+                ;
+            }
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+
+//        MenuItem item=menu.findItem(R.id.menu_Wrong_answer );
+//        ConstraintLayout constraintLayout= (ConstraintLayout) item.getActionView();
+//        txt_wrong_answer=(TextView)constraintLayout.findViewById(R.id.txt_wrong_answer);
+//        txt_wrong_answer.setText(String.valueOf(0));
+
+
+        return true;
+
+    }
+
+    //    @Override
 //    public boolean onSupportNavigateUp() {
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
