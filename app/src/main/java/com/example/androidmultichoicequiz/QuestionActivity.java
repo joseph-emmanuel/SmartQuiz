@@ -2,6 +2,7 @@ package com.example.androidmultichoicequiz;
 
  import android.os.Bundle;
 import android.os.CountDownTimer;
+ import android.util.Log;
  import android.view.MenuItem;
  import android.view.View;
 import android.view.Menu;
@@ -209,7 +210,7 @@ public class QuestionActivity extends AppCompatActivity
                     txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
                                     .append("/")
                                     .append(String.format("%d",Common.questionList.size())).toString());
-//                    txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
+                    txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
 
                     if(question_state.getType()!=Common.ANSWER_TYPE.NO_ANSWER){
                         questionFragment.showCorrectAnswer();
@@ -249,7 +250,7 @@ public class QuestionActivity extends AppCompatActivity
         txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
                 .append("/")
                 .append(String.format("%d",Common.questionList.size())).toString());
-
+        txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
 
         if(question_state.getType()!=Common.ANSWER_TYPE.NO_ANSWER){
             questionFragment.showCorrectAnswer();
@@ -376,7 +377,7 @@ public class QuestionActivity extends AppCompatActivity
 
             if(!isAnswerModeView){
                 new MaterialStyledDialog.Builder(this)
-                        .setTitle("Finih ?").setIcon(R.drawable.ic_baseline_mood_24)
+                        .setTitle("Finish ?").setIcon(R.drawable.ic_baseline_mood_24)
                 .setDescription("Do you really want to finish ?")
                 .setNegativeText("No")
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -390,6 +391,7 @@ public class QuestionActivity extends AppCompatActivity
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        Log.e("TAG", "onClick: Yes yahoo" );
                         finishGame();
                     }
                 }).show();
@@ -404,10 +406,10 @@ public class QuestionActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
 
-//        MenuItem item=menu.findItem(R.id.menu_Wrong_answer );
-//        ConstraintLayout constraintLayout= (ConstraintLayout) item.getActionView();
-//        txt_wrong_answer=(TextView)constraintLayout.findViewById(R.id.txt_wrong_answer);
-//        txt_wrong_answer.setText(String.valueOf(0));
+        MenuItem item = menu.findItem(R.id.menu_Wrong_answer);
+         ConstraintLayout constraintLayout= (ConstraintLayout) item.getActionView();
+        txt_wrong_answer=(TextView)constraintLayout.findViewById(R.id.txt_wrong_answer);
+        txt_wrong_answer.setText(String.valueOf(0));
 
 
         return true;
