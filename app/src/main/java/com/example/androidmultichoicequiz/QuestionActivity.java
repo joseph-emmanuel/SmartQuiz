@@ -4,12 +4,14 @@ package com.example.androidmultichoicequiz;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.Menu;
-import android.widget.TextView;
+ import android.widget.TableLayout;
+ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.androidmultichoicequiz.Adapter.AnswerSheetAdapter;
-import com.example.androidmultichoicequiz.Common.Common;
+ import com.example.androidmultichoicequiz.Adapter.QuestionFragmentAdapter;
+ import com.example.androidmultichoicequiz.Common.Common;
 import com.example.androidmultichoicequiz.DBHelper.DBHelper;
  import com.example.androidmultichoicequiz.Model.CurrentQuestion;
  import com.example.androidmultichoicequiz.Model.Question;
@@ -17,8 +19,9 @@ import com.example.androidmultichoicequiz.DBHelper.DBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+ import com.google.android.material.tabs.TabLayout;
 
-import androidx.annotation.NonNull;
+ import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -28,8 +31,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+ import androidx.viewpager.widget.ViewPager;
 
-import java.util.concurrent.TimeUnit;
+ import java.util.concurrent.TimeUnit;
 
 public class QuestionActivity extends AppCompatActivity
 {
@@ -42,6 +46,10 @@ public class QuestionActivity extends AppCompatActivity
     RecyclerView answer_sheet_view;
 
     AnswerSheetAdapter answerSheetAdapter;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+
 
     @Override
     protected void onDestroy() {
@@ -110,8 +118,35 @@ public class QuestionActivity extends AppCompatActivity
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this, Common.questionList.size() / 2));
             answerSheetAdapter = new AnswerSheetAdapter(this, Common.answerSheetList);
             answer_sheet_view.setAdapter(answerSheetAdapter);
+
+            viewPager=(ViewPager)findViewById(R.id.viewpager);
+            tabLayout=(TabLayout)findViewById(R.id.sliding_tabs);
+
+            genFragmentList();
+
+            QuestionFragmentAdapter    questionFragmentAdapter=new QuestionFragmentAdapter(getSupportFragmentManager(),
+                    this,
+                    Common.fragmentsList);
+            viewPager.setAdapter(questionFragmentAdapter);
+
+            tabLayout.setupWithViewPager(viewPager);
+
+
+
         }
 
+    }
+
+    private void genFragmentList() {
+        for (int i=0;i<Common.questionList.size();i++){
+            Bundle bundle=new Bundle();
+            bundle.putInt("index",i);
+            QuestionFragment fragment=new QuestionFragment();
+            fragment.setArguments(bundle);
+
+
+            Common.fragmentsList.add(fragment);
+        }
     }
 
 //    private void getAnswerSheetItems() {

@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import com.example.androidmultichoicequiz.Model.Category;
 import com.example.androidmultichoicequiz.Model.CurrentQuestion;
 import com.example.androidmultichoicequiz.Model.Question;
+import com.example.androidmultichoicequiz.QuestionFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Common {
     public static CountDownTimer countDownTimer;
     public static int right_answer_count=0;
     public static int wrong_answer_count=0;
+    public static ArrayList<QuestionFragment> fragmentsList=new ArrayList<>();
 
     public enum ANSWER_TYPE{
         NO_ANSWER,
