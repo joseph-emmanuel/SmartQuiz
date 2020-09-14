@@ -1,7 +1,10 @@
 package com.example.androidmultichoicequiz;
 
+ import android.app.Activity;
+ import android.content.Intent;
  import android.os.Bundle;
 import android.os.CountDownTimer;
+ import android.text.TextUtils;
  import android.util.Log;
  import android.view.MenuItem;
  import android.view.View;
@@ -22,8 +25,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
  import com.google.android.material.tabs.TabLayout;
+ import com.google.gson.Gson;
 
  import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
  import androidx.constraintlayout.widget.ConstraintLayout;
  import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -40,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class QuestionActivity extends AppCompatActivity
 {
+    private static final int CODE_GET_RESULT =9999 ;
     int time_play= Common.TOTAL_TIME;
     boolean isAnswerModeView=false;
 
@@ -259,6 +265,13 @@ public class QuestionActivity extends AppCompatActivity
         }
         //we will navigate to new Result activity here
 
+        Intent intent=new Intent(QuestionActivity.this,ResultActivity.class);
+        Common.timer=Common.TOTAL_TIME-time_play;
+        Common.no_answer_count=Common.questionList.size()-(Common.wrong_answer_count+Common.right_answer_count);
+        Common.data_question=new StringBuilder(new Gson().toJson(Common.answerSheetList));
+
+        startActivityForResult(intent,CODE_GET_RESULT);
+
     }
     private void countCurrectAnswer() {
         //Result varisbale
@@ -304,6 +317,7 @@ public class QuestionActivity extends AppCompatActivity
                @Override
                public void onFinish() {
                     //game finiishes here
+                   finishGame();
                }
            }.start();
        }
@@ -398,6 +412,8 @@ public class QuestionActivity extends AppCompatActivity
                 ;
             }
 
+            else
+                finishGame();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -414,6 +430,69 @@ public class QuestionActivity extends AppCompatActivity
 
         return true;
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==CODE_GET_RESULT){
+            if(resultCode== Activity.RESULT_OK)
+            {
+                String action=data.getStringExtra("action");
+                if(action==null|| TextUtils.isEmpty(action)){
+                    int questionNum=data.getIntExtra(Common.KEY_BACK_FROM_RESULT,-1);
+                    viewPager.setCurrentItem(questionNum);
+
+                    isAnswerModeView=true;
+                    Common.countDownTimer.cancel();
+
+                    txt_wrong_answer.setVisibility(View.GONE);
+                    txt_right_answer.setVisibility(View.GONE);
+                    txt_timer.setVisibility(View.GONE);
+                }else
+                {
+                    if(action.equals("viewquizanswer"))
+                    {
+                        viewPager.setCurrentItem(0);
+
+                        isAnswerModeView=true;
+
+                        Common.countDownTimer.cancel();
+
+                        txt_wrong_answer.setVisibility(View.GONE);
+                        txt_right_answer.setVisibility(View.GONE);
+                        txt_timer.setVisibility(View.GONE);
+
+                        for(int i=0;i<Common.fragmentsList.size();i++){
+                            Common.fragmentsList.get(i).showCorrectAnswer();
+                            Common.fragmentsList.get(i).disableAnswer();
+                        }
+                    }else if(action.equals("doitagain")){
+
+                        viewPager.setCurrentItem(0);
+
+                        isAnswerModeView=false;
+                        countDownTimer();
+
+                        txt_wrong_answer.setVisibility(View.VISIBLE);
+                        txt_right_answer.setVisibility(View.VISIBLE);
+                        txt_timer.setVisibility(View.VISIBLE);
+
+                        for (CurrentQuestion item:Common.answerSheetList){
+                            item.setType(Common.ANSWER_TYPE.NO_ANSWER);//Reset all questions
+
+                        }
+                        answerSheetAdapter.notifyDataSetChanged();
+
+                        for(int i=0;i<Common.fragmentsList.size();i++)
+                            Common.fragmentsList.get(i).resetQuestion();
+
+                    }
+
+
+                }
+            }
+        }
     }
 
     //    @Override
