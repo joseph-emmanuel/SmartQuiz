@@ -2,11 +2,20 @@
 
 
 It's an application for users to test there knoledge 
+Team:
+  -Joseph
+  
+  -Hard
+  
 
 THINGS TO KNOW BEFORE STARTING THE GAME:
   1)ONLY TWO CATEGORIES ARE WORKING:
       *MUSIC-Where test data is loaded with currect and wrong answer
       *GEOGRAPHY-Where the actual questions and answers are shown, some questions even have images
+      
+      
+      
+Demo_Project_gif_Video_Link:https://1drv.ms/u/s!ApkFgrvkve66gfdLklwn33lS-4MAhQ?e=Hq5yaX
 
 Github link:https://github.com/joseph-emmanuel/SmartQuiz.git
 Properties Working:
