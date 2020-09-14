@@ -9,7 +9,6 @@ THINGS TO KNOW BEFORE STARTING THE GAME:
       *GEOGRAPHY-Where the actual questions and answers are shown, some questions even have images
 
 Github link:https://github.com/joseph-emmanuel/SmartQuiz.git
-
 Properties Working:
 * Sqlite is connected and working
 * Using materialDialog for showing pop-ups
